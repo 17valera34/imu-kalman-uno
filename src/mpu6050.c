@@ -1,6 +1,7 @@
 #include "mpu6050.h"
 #include "i2c.h"
 #include "gpio.h"
+#include "usart.h"
 
 static uint8_t data[14];
 
@@ -80,4 +81,26 @@ void mpu6050_get_data(MPU6050_Data *d)
     d->gyro_x = (int16_t)(data[8] << 8 | data[9]);
     d->gyro_y = (int16_t)(data[10] << 8 | data[11]);
     d->gyro_z = (int16_t)(data[12] << 8 | data[13]);
+}
+
+void mpu6050_convert_data(const MPU6050_Data *data, MPU6050_Values *value)
+{
+    value->a_x = data->accel_x / 16384.0f;
+    value->a_y = data->accel_y / 16384.0f;
+    value->a_z = data->accel_z / 16384.0f;
+    value->temp = data->temp / 340.0f + 36.53f;
+    value->g_x = data->gyro_x / 131.0f;
+    value->g_y = data->gyro_y / 131.0f;
+    value->g_z = data->gyro_z / 131.0f;
+}
+
+MPU6050_Values mpu6050_read(void)
+{
+    MPU6050_Values values;
+    MPU6050_Data d;
+
+    mpu6050_read_all();
+    mpu6050_get_data(&d);
+    mpu6050_convert_data(&d, &values);
+    return values;
 }

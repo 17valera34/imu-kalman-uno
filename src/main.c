@@ -11,21 +11,22 @@ int main(void)
   gpio_init();
   usart_init();
   i2c_init();
-  MPU6050_Data d;
+  
   sei();
   mpu6050_init();
 
   while (1)
   {
-    mpu6050_read_all();
-    mpu6050_get_data(&d);
+    MPU6050_Values v = mpu6050_read();
 
     usart_send_string("AX = ");
-    usart_send_int(d.accel_x);
+    usart_send_float(v.a_x, 3);
     usart_send_string(", AY = ");
-    usart_send_int(d.accel_y);
+    usart_send_float(v.a_y, 3);
     usart_send_string(", AZ = ");
-    usart_send_int(d.accel_z);
+    usart_send_float(v.a_z, 3);
+    usart_send_string(", Temp = ");
+    usart_send_float(v.temp, 3);
     usart_send_string("\r\n");
 
     _delay_ms(500);
