@@ -118,5 +118,6 @@ uint8_t i2c_read_bytes(uint8_t address, uint8_t reg, uint8_t *buffer, uint8_t le
         }
     }
 
+    i2c_stop();
     return 0;
 }

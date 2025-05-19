@@ -11,25 +11,23 @@ int main(void)
   gpio_init();
   usart_init();
   i2c_init();
+  MPU6050_Data d;
   sei();
   mpu6050_init();
 
-  uint8_t who_am_i;
-  uint8_t status = mpu6050_read_reg(0x68, 0x75, &who_am_i);
-  if (status == 0)
-  {
-    usart_send_string("WHO_AM_I = 0x");
-    usart_send_hex(who_am_i);
-    usart_send_string("\r\n");
-  }
-  else
-  {
-    usart_send_string("Ошибка чтения регистра!\r\n");
-  }
-
   while (1)
   {
-    //mpu6050_read_bytes();
+    mpu6050_read_all();
+    mpu6050_get_data(&d);
+
+    usart_send_string("AX = ");
+    usart_send_int(d.accel_x);
+    usart_send_string(", AY = ");
+    usart_send_int(d.accel_y);
+    usart_send_string(", AZ = ");
+    usart_send_int(d.accel_z);
+    usart_send_string("\r\n");
+
     _delay_ms(500);
   }
 }
