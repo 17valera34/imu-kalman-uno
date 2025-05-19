@@ -58,7 +58,7 @@ uint8_t i2c_write(uint8_t data)
     }
 
     uint8_t status = TWSR & 0xF8;
-    if(status != TWI_MT_DATA_ACK)
+    if (status != TWI_MT_DATA_ACK)
     {
         return 1;
     }
@@ -86,4 +86,37 @@ uint8_t i2c_read_nack(void)
     }
 
     return TWDR;
+}
+
+uint8_t i2c_read_bytes(uint8_t address, uint8_t reg, uint8_t *buffer, uint8_t len)
+{
+    if(i2c_start((0x68 << 1) | 0))
+    {
+        return 1;
+    }
+
+    if(i2c_write(0x3B))
+    {
+        return 2;
+    }
+
+    if(i2c_start((0x68 << 1) | 1))
+    {
+        return 3;
+    }
+
+
+    for (uint8_t i = 0; i < len; i++)
+    {
+        if (i < (len - 1))
+        {
+            buffer[i] = i2c_read_ack();
+        }
+        else
+        {
+            buffer[i] = i2c_read_nack();
+        }
+    }
+
+    return 0;
 }

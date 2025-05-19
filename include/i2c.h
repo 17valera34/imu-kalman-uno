@@ -23,4 +23,6 @@ uint8_t i2c_read_ack(void);
 // Read one byte and send NACK to slave (last byte read)
 uint8_t i2c_read_nack(void);
 
+
+uint8_t i2c_read_bytes(uint8_t address, uint8_t reg, uint8_t *buffer, uint8_t len);
 #endif

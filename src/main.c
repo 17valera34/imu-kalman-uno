@@ -2,37 +2,35 @@
 #include "util/delay.h"
 #include "usart.h"
 #include "i2c.h"
+#include "mpu6050.h"
+#include "gpio.h"
 #include <avr/interrupt.h>
 
 int main(void)
 {
-  DDRB |= (1 << DDB5);
+  gpio_init();
   usart_init();
   i2c_init();
   sei();
+  mpu6050_init();
 
-  i2c_start((0x68 << 1) | 0);
-  i2c_write(0x75);
-  i2c_start((0x68 << 1) | 1);
-  uint8_t who_am_i = i2c_read_nack();
-  i2c_stop();
-
-  usart_send_string("WHO_AM_I: 0x");
-  usart_send_hex(who_am_i);
-  usart_send_string("\r\n");
-
-  i2c_start((0x68 << 1) | 0);
-  i2c_write(0x75);
-  i2c_start((0x68 << 1) | 1);
-  who_am_i = i2c_read_nack();
-  i2c_stop();
-
-  usart_send_string("WHO_AM_I: 0x");
-  usart_send_hex(who_am_i);
-  usart_send_string("\r\n");
+  uint8_t who_am_i;
+  uint8_t status = mpu6050_read_reg(0x68, 0x75, &who_am_i);
+  if (status == 0)
+  {
+    usart_send_string("WHO_AM_I = 0x");
+    usart_send_hex(who_am_i);
+    usart_send_string("\r\n");
+  }
+  else
+  {
+    usart_send_string("Ошибка чтения регистра!\r\n");
+  }
 
   while (1)
   {
+    //mpu6050_read_bytes();
+    _delay_ms(500);
   }
 }
 
@@ -40,7 +38,7 @@ int main(void)
 // {
 //   while (1)
 //   {
-//     PORTB ^= (1 << DDB5);
+//     PORTB ^= (1 << PORTB5);
 //     _delay_ms(100);
 //   }
 // }
@@ -49,13 +47,13 @@ int main(void)
 
 //   while (1)
 //   {
-//     PORTB ^= (1 << DDB5);
+//     PORTB ^= (1 << PORTB5);
 //     _delay_ms(800);
 //   }
 // }
 // else if (result == 2)
 // {
-//   PORTB |= (1 << DDB5);
+//   PORTB |= (1 << PORTB5);
 //   i2c_stop();
 //   while (1)
 //   {
