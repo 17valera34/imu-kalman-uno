@@ -90,17 +90,17 @@ uint8_t i2c_read_nack(void)
 
 uint8_t i2c_read_bytes(uint8_t address, uint8_t reg, uint8_t *buffer, uint8_t len)
 {
-    if(i2c_start((0x68 << 1) | 0))
+    if(i2c_start((address << 1) | 0))
     {
         return 1;
     }
 
-    if(i2c_write(0x3B))
+    if(i2c_write(reg))
     {
         return 2;
     }
 
-    if(i2c_start((0x68 << 1) | 1))
+    if(i2c_start((address << 1) | 1))
     {
         return 3;
     }

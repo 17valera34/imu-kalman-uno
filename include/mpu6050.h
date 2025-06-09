@@ -23,9 +23,8 @@ typedef struct
 
 void mpu6050_init(void);
 uint8_t mpu6050_write_reg(uint8_t address, uint8_t reg, uint8_t data);
-uint8_t mpu6050_read_reg(uint8_t address, uint8_t reg, uint8_t *data);
-void mpu6050_read_all(void);
-void mpu6050_get_data(MPU6050_Data *d);
+//uint8_t mpu6050_read_reg(uint8_t address, uint8_t reg, uint8_t *data);
+void mpu6050_read_all(MPU6050_Data *d);
 void mpu6050_convert_data(const MPU6050_Data *data, MPU6050_Values *value);
 MPU6050_Values mpu6050_read(void);
 

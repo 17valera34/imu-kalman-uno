@@ -25,10 +25,15 @@ int main(void)
     usart_send_float(v.a_y, 3);
     usart_send_string(", AZ = ");
     usart_send_float(v.a_z, 3);
-    usart_send_string(", Temp = ");
-    usart_send_float(v.temp, 3);
-    usart_send_string("\r\n");
+   
+    usart_send_string(",  GX = ");
+    usart_send_float(v.g_x, 3);
+    usart_send_string(", GY = ");
+    usart_send_float(v.g_y, 3);
+    usart_send_string(", GZ = ");
+    usart_send_float(v.g_z, 3);
 
+    usart_send_string("\r\n");
     _delay_ms(500);
   }
 }
